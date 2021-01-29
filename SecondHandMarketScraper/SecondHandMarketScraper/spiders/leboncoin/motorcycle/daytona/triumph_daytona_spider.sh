@@ -1,1 +1,2 @@
-scrapy runspider SecondHandMarketScraper/SecondHandMarketScraper/spiders/leboncoin/motorcycle/daytona/triumph_daytona_spider.py -o quotes.jl
+scrapy runspider SecondHandMarketScraper/SecondHandMarketScraper/spiders/leboncoin/motorcycle/daytona/triumph_daytona_spider.py -o SecondHandMarketScraper/SecondHandMarketScraper/resources/leboncoin/motorcycle/daytona/triumph_daytona.json
+sleep 10
