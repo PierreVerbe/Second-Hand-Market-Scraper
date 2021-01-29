@@ -1,1 +1,1 @@
-scrapy runspider SecondHandMarketScraper/SecondHandMarketScraper/spiders/documentation/quotes_humor_spider.py -o quotes.jl
+scrapy runspider SecondHandMarketScraper/SecondHandMarketScraper/spiders/tutorial/quotes_humor_spider.py -o quotes.jl
