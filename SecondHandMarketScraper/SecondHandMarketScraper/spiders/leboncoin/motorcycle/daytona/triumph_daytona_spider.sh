@@ -1,0 +1,1 @@
+scrapy runspider SecondHandMarketScraper/SecondHandMarketScraper/spiders/leboncoin/motorcycle/daytona/triumph_daytona_spider.py -o quotes.jl
