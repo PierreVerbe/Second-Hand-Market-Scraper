@@ -1,4 +1,5 @@
 import scrapy
+import logging
 
 class TriumphDaytonaSpider(scrapy.Spider):
     name = 'Triumph_Daytona_Spider'
@@ -7,6 +8,7 @@ class TriumphDaytonaSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
+        logging.log(logging.WARNING, "This is a warning")
         print(response.xpath('/html/body/div[2]/div/section/main/div/div[1]/div[6]/div/div[5]/div[1]/div[1]'))
         for quote in response.xpath('/html/body/div[2]/div/section/main/div/div[1]/div[6]/div/div[5]/div[1]/div[1]'):
             yield {
