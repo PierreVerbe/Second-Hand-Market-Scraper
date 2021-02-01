@@ -29,22 +29,27 @@ pip install scrapy scrapy-splash
 ```
 
 ## Scrape a website
-* Run a pyython file
+* Run a python file
 
 * Use scrapy command
 ```bash
 scrapy runspider SecondHandMarketScraper/SecondHandMarketScraper/spiders/folder/myFile.py
 ```
 
+* Use scrapy shell with Splash
+```bash
+scrapy shell 'http://localhost:8050/render.html?url=https://www.website.fr&timeout=10&wait=0.5'
+```
+
 ## Notes
 * Can access the Splash rendering service
 [Click here](http://localhost:8050)
 
-
-
 ## TODO List
 - Finish markdown
-- 
+- Next  page
+- Write into file
+- spider input is spider output
 
 
 scrapy shell 'http://localhost:8050/render.html?url=https://www.leboncoin.fr/recherche?category=3"&"moto_brand=triumph"&"moto_model=Daytona"&"regdate=2005-max&timeout=10&wait=0.5'

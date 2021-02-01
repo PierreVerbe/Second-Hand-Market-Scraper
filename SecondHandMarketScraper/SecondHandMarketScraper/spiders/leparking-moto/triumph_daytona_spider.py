@@ -9,6 +9,7 @@ import json
 
 class LPMTriumphDaytonaLinksSpider(scrapy.Spider):
     name = 'LPM_Triumph_Daytona_Links_Spider'
+    base_url = 'https://www.leparking-moto.fr'
     custom_settings = {
         'DOWNLOAD_DELAY': 3,
         'COOKIES_ENABLED': False,
@@ -39,16 +40,16 @@ class LPMTriumphDaytonaLinksSpider(scrapy.Spider):
         links = self.parse_links(response)
 
         # Write into a file
-        filename = f"LPM_Triumph_Daytona_Links.json"
+        filename = f"SecondHandMarketScraper/SecondHandMarketScraper/resources/leparking-moto/LPM_Triumph_Daytona_Links.json"
 
         f = open(filename, "w")
         for l in links:
-            resultString = json.dumps(l, indent=4)
+            complete_links = {'links': list(map(lambda x: self.base_url + x, l["links"]))}
+            resultString = json.dumps(complete_links, indent=4)
             f.write(resultString)
-            f.write("\n")
-        
         #f.write(response.body)
         f.close()
+
         self.logger.debug(f"Saved file {filename}")
 
         """
@@ -71,6 +72,54 @@ class LPMTriumphDaytonaSalesSpider(scrapy.Spider):
         'COOKIES_ENABLED': False,
     }
 
+    lua_script="""
+    
+    """
+
+    def start_requests(self):
+        urls = [
+            'https://www.leparking-moto.fr//moto-occasion-detail/triumph-daytona-daytona-675/triumph-daytona-675-noir/3234HL1.html',
+        ]
+        for url in urls:
+            yield SplashRequest(url=url, callback=self.parse, args={
+                'timeout':10,
+                'wait': 3,
+                'lua_source': self.lua_script
+                })
+
+    def parse(self, response):
+        moto = self.parse_links(response)
+
+        # Write into a file
+        filename = f"SecondHandMarketScraper/SecondHandMarketScraper/resources/leparking-moto/LPM_Triumph_Daytona_Results.json"
+
+        f = open(filename, "w")
+        for m in moto:
+            resultString = json.dumps(m, indent=4)
+            f.write(resultString)
+            f.write("\n")
+        f.close()
+        
+        self.logger.debug(f"Saved file {filename}")
+
+    def parse_links(self, response):
+        for element in response.xpath('//section[@class="top-detail clearfix"]'):
+            yield {
+                'name': element.xpath('//span[@itemprop="name"]/text()').getall(),
+                'published': element.xpath('//span[@class="btn-publication-detail"]/text()').get(),
+                'price': element.xpath('//p[@class="prix"]/span/text()').get(),
+                'seller type': element.xpath('//p[@class="type-vendeur type-vendeur-pro"]/text()').get(),
+                'year': element.xpath('//ul[@class="list-info-detail clearfix"]/li[@class="no-pad-left"]/text()').get(),
+                'kms': element.xpath('//ul[@class="list-info-detail clearfix"]/li/text()').get(), #fail
+                'cylinders': element.xpath('//ul[@class="list-info-detail clearfix"]/li[@class="no-border"]/text()').get(),
+                'colour': element.xpath('//ul[@class="list-info-detail clearfix"]/li[@class="no-pad-left"]/text()').get(), #fail
+                'category': element.xpath('//ul[@class="list-info-detail clearfix"]/li[@class="no-border"]/text()').get(), #fail
+                'description': element.xpath('//p[@class="descri-part"]/span/text()').get(),
+                'localisation': element.xpath('//div[@class="content-map"]/text()').get(), #fail
+                
+                #'links': element.xpath('//a[@class="external btn-plus "]/@href').getall(),
+            }
+
 # Run spiders sequentially
 configure_logging({'LOG_FORMAT': '%(levelname)s: %(message)s'})
 runner = CrawlerRunner()
@@ -78,7 +127,7 @@ runner = CrawlerRunner()
 @defer.inlineCallbacks
 def crawl():
     yield runner.crawl(LPMTriumphDaytonaLinksSpider)
-    yield runner.crawl(LPMTriumphDaytonaSalesSpider)
+    #yield runner.crawl(LPMTriumphDaytonaSalesSpider)
     reactor.stop()
 
 crawl()
