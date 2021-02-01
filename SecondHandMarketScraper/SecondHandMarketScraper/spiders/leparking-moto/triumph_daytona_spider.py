@@ -5,8 +5,10 @@ from twisted.internet import reactor, defer
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.log import configure_logging
 
-class TriumphDaytonaSpider(scrapy.Spider):
-    name = 'LPM_Triumph_Daytona_Spider'
+import json
+
+class LPMTriumphDaytonaLinksSpider(scrapy.Spider):
+    name = 'LPM_Triumph_Daytona_Links_Spider'
     custom_settings = {
         'DOWNLOAD_DELAY': 3,
         'COOKIES_ENABLED': False,
@@ -34,26 +36,20 @@ class TriumphDaytonaSpider(scrapy.Spider):
                 })
 
     def parse(self, response):
-        items = self.parse_item
+        links = self.parse_links(response)
 
-        # Works !
-        self.logger.debug("hello")
-
-        """
-        for element in response.xpath('//ul[@id="resultats"]/li/section[@class="clearfix complete-holder"]/div[@class="padd-bloc clearfix"]'):
-            yield {
-                'price': element.xpath('div[@class="info-comp clearfix"]/div[@class="price-block "]/p/text()').get(),
-            }
-        """
-
-    
-        
         # Write into a file
-        filename = f'lpm.json'
-        with open(filename, 'wb') as f:
-            #f.write(items)
-            f.write(response.body)
-        self.log(f'Saved file {filename}')
+        filename = f"lpm.json"
+
+        f = open(filename, "w")
+        for l in links:
+            resultString = json.dumps(l)
+            f.write(resultString)
+            f.write("\n")
+        
+        #f.write(response.body)
+        f.close()
+        self.logger.debug(f"Saved file {filename}")
 
         """
         next_page = response.css('li.next a::attr("href")').get()
@@ -61,18 +57,22 @@ class TriumphDaytonaSpider(scrapy.Spider):
             yield response.follow(next_page, self.parse)
         """
 
-    def parse_item(self, response):
-        for element in response.xpath('//ul[@id="resultats"]/li/section[@class="clearfix complete-holder"]/div[@class="padd-bloc clearfix"]'):
+    def parse_links(self, response):
+        for element in response.xpath('//div[@class="padd-bloc clearfix"]'):
             yield {
-                'price': element.xpath('div[@class="info-comp clearfix"]/div[@class="price-block "]/p/text()').get(),
+                'link': element.xpath('//a[@class="external btn-plus "]/@href').getall(),
             }
      
-
 # response.xpath('//ul[@id="resultats"]/li/section[@class="clearfix complete-holder"]/div[@class="padd-bloc clearfix"]/div[@class="info-comp clearfix"]/div[@class="price-block "]/p/text()').getall()
 
 
-class test(scrapy.Spider):
-    name = 'test'
+class LPMTriumphDaytonaSalesSpider(scrapy.Spider):
+    name = 'LPM_Triumph_Daytona_Sales_Spider'
+
+    custom_settings = {
+        'DOWNLOAD_DELAY': 3,
+        'COOKIES_ENABLED': False,
+    }
 
 # Run spiders sequentially
 configure_logging({'LOG_FORMAT': '%(levelname)s: %(message)s'})
@@ -80,8 +80,8 @@ runner = CrawlerRunner()
 
 @defer.inlineCallbacks
 def crawl():
-    yield runner.crawl(TriumphDaytonaSpider)
-    yield runner.crawl(test)
+    yield runner.crawl(LPMTriumphDaytonaLinksSpider)
+    yield runner.crawl(LPMTriumphDaytonaSalesSpider)
     reactor.stop()
 
 crawl()
