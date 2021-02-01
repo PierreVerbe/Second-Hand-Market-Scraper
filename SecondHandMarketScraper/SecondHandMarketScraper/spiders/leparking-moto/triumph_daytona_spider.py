@@ -78,7 +78,7 @@ class LPMTriumphDaytonaSalesSpider(scrapy.Spider):
 
     def start_requests(self):
         urls = [
-            'https://www.leparking-moto.fr//moto-occasion-detail/triumph-daytona-daytona-675/triumph-daytona-675-noir/3234HL1.html',
+            'https://www.leparking-moto.fr/moto-occasion-detail/triumph-daytona-daytona-675/triumph-daytona-675-noir/3234HL1.html',
         ]
         for url in urls:
             yield SplashRequest(url=url, callback=self.parse, args={
@@ -109,15 +109,13 @@ class LPMTriumphDaytonaSalesSpider(scrapy.Spider):
                 'published': element.xpath('//span[@class="btn-publication-detail"]/text()').get(),
                 'price': element.xpath('//p[@class="prix"]/span/text()').get(),
                 'seller type': element.xpath('//p[@class="type-vendeur type-vendeur-pro"]/text()').get(),
-                'year': element.xpath('//ul[@class="list-info-detail clearfix"]/li[@class="no-pad-left"]/text()').get(),
-                'kms': element.xpath('//ul[@class="list-info-detail clearfix"]/li/text()').get(), #fail
-                'cylinders': element.xpath('//ul[@class="list-info-detail clearfix"]/li[@class="no-border"]/text()').get(),
-                'colour': element.xpath('//ul[@class="list-info-detail clearfix"]/li[@class="no-pad-left"]/text()').get(), #fail
-                'category': element.xpath('//ul[@class="list-info-detail clearfix"]/li[@class="no-border"]/text()').get(), #fail
+                'year': element.xpath('//ul[@class="list-info-detail clearfix"]/li[1]/text()').get(),
+                'kms': element.xpath('//ul[@class="list-info-detail clearfix"]/li[2]/text()').get(), #fail
+                'cylinders': element.xpath('//ul[@class="list-info-detail clearfix"]/li[3]/text()').get(),
+                'colour': element.xpath('//ul[@class="list-info-detail clearfix"]/li[4]/text()').get(), #fail
+                'category': element.xpath('//ul[@class="list-info-detail clearfix"]/li[5]/text()').get(), #fail
                 'description': element.xpath('//p[@class="descri-part"]/span/text()').get(),
-                'localisation': element.xpath('//div[@class="content-map"]/text()').get(), #fail
-                
-                #'links': element.xpath('//a[@class="external btn-plus "]/@href').getall(),
+                'localisation': element.xpath('//div[@class="content-map"]/text()[2]').get(), #fail
             }
 
 # Run spiders sequentially
@@ -126,8 +124,8 @@ runner = CrawlerRunner()
 
 @defer.inlineCallbacks
 def crawl():
-    yield runner.crawl(LPMTriumphDaytonaLinksSpider)
-    #yield runner.crawl(LPMTriumphDaytonaSalesSpider)
+    #yield runner.crawl(LPMTriumphDaytonaLinksSpider)
+    yield runner.crawl(LPMTriumphDaytonaSalesSpider)
     reactor.stop()
 
 crawl()
