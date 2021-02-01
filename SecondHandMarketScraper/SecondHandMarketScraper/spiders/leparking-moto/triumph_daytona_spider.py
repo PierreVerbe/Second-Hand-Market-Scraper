@@ -39,11 +39,11 @@ class LPMTriumphDaytonaLinksSpider(scrapy.Spider):
         links = self.parse_links(response)
 
         # Write into a file
-        filename = f"lpm.json"
+        filename = f"LPM_Triumph_Daytona_Links.json"
 
         f = open(filename, "w")
         for l in links:
-            resultString = json.dumps(l)
+            resultString = json.dumps(l, indent=4)
             f.write(resultString)
             f.write("\n")
         
@@ -58,14 +58,11 @@ class LPMTriumphDaytonaLinksSpider(scrapy.Spider):
         """
 
     def parse_links(self, response):
-        for element in response.xpath('//div[@class="padd-bloc clearfix"]'):
+        for element in response.xpath('//ul[@id="resultats"]'):
             yield {
-                'link': element.xpath('//a[@class="external btn-plus "]/@href').getall(),
+                'links': element.xpath('//a[@class="external btn-plus "]/@href').getall(),
             }
      
-# response.xpath('//ul[@id="resultats"]/li/section[@class="clearfix complete-holder"]/div[@class="padd-bloc clearfix"]/div[@class="info-comp clearfix"]/div[@class="price-block "]/p/text()').getall()
-
-
 class LPMTriumphDaytonaSalesSpider(scrapy.Spider):
     name = 'LPM_Triumph_Daytona_Sales_Spider'
 
