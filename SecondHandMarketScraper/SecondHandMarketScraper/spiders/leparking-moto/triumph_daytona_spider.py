@@ -79,6 +79,7 @@ class LPMTriumphDaytonaSalesSpider(scrapy.Spider):
     def start_requests(self):
         urls = [
             'https://www.leparking-moto.fr/moto-occasion-detail/triumph-daytona-daytona-675/triumph-daytona-675-noir/3234HL1.html',
+            'https://www.leparking-moto.fr/moto-occasion-detail/triumph-daytona-daytona-675/triumph-daytona-675-d67lc/5C69174.html',
         ]
         for url in urls:
             yield SplashRequest(url=url, callback=self.parse, args={

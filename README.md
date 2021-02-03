@@ -47,7 +47,8 @@ scrapy shell 'http://localhost:8050/render.html?url=https://www.website.fr&timeo
 
 ## TODO List
 - Finish markdown
-- Next  page
+- Next page
+- Multiple URLs
 - Write into file
 - spider input is spider output
 
